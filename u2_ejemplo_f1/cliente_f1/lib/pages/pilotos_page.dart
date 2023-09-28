@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:u2_clase2/services/http_service.dart';
 import 'package:u2_clase2/widgets/piloto_tile.dart';
 
 class PilotosPage extends StatefulWidget {
@@ -48,12 +49,32 @@ class _PilotosPageState extends State<PilotosPage> {
 
             //LISTA PILOTOS
             Expanded(
-              child: ListView(
-                children: [
-                  PilotoTile(nombre: 'Max Verstappen', numero: 1, puntos: 400, pais: 'NED'),
-                  PilotoTile(nombre: 'Sergio Perez', numero: 11, puntos: 223, pais: 'MEX'),
-                  PilotoTile(nombre: 'Lewis Hamilton', numero: 44, puntos: 190, pais: 'GBR'),
-                ],
+              child: FutureBuilder(
+                future: HttpService().pilotos(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+                    //esperando datos
+                    // print('ESPERANDING');
+                    return Center(
+                      child: CircularProgressIndicator(color: Colors.red),
+                    );
+                  } else {
+                    //llegaron los datos
+                    // print('LLEGARON DATOS');
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        var piloto = snapshot.data[index];
+                        return PilotoTile(
+                          nombre: piloto['nombre'],
+                          numero: piloto['numero'],
+                          puntos: piloto['puntos'],
+                          pais: piloto['pais'],
+                        );
+                      },
+                    );
+                  }
+                },
               ),
             ),
             //FIN LISTA PILOTOS
