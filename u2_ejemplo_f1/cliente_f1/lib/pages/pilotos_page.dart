@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:u2_clase2/services/http_service.dart';
-import 'package:u2_clase2/widgets/piloto_tile.dart';
+import 'package:u2_clase2/constants.dart';
+import 'package:u2_clase2/pages/pilotos/pilotos_agregar_page.dart';
+import 'package:u2_clase2/pages/pilotos/pilotos_estadisticas_page.dart';
+import 'package:u2_clase2/pages/pilotos/pilotos_informacion_page.dart';
+import 'package:u2_clase2/pages/pilotos/pilotos_posiciones_page.dart';
 
 class PilotosPage extends StatefulWidget {
   PilotosPage({Key? key}) : super(key: key);
@@ -12,78 +14,20 @@ class PilotosPage extends StatefulWidget {
 }
 
 class _PilotosPageState extends State<PilotosPage> {
+  int indicePagina = 0;
+  List paginas = [PilotosPosicionesPage(), PilotosInformacionPage(), PilotosEstadisticasPage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage('assets/images/fondo.jpg'), fit: BoxFit.cover),
-        ),
-        child: Column(
-          children: [
-            //TITULO SECCION
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(30, 10, 0, 5),
-              decoration: BoxDecoration(
-                color: Color(0xCC16171F),
-                border: Border(bottom: BorderSide(color: Color(0xFFE10600), width: 7)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Posiciones',
-                    style: GoogleFonts.oxanium(textStyle: TextStyle(fontStyle: FontStyle.italic, color: Colors.white)),
-                  ),
-                  Text(
-                    'PILOTOS',
-                    style: GoogleFonts.oxanium(
-                      textStyle: TextStyle(height: 0.8, color: Colors.white, fontSize: 22, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //FIN TITULO SECCION
-
-            //LISTA PILOTOS
-            Expanded(
-              child: FutureBuilder(
-                future: HttpService().pilotos(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
-                    //esperando datos
-                    // print('ESPERANDING');
-                    return Center(
-                      child: CircularProgressIndicator(color: Colors.red),
-                    );
-                  } else {
-                    //llegaron los datos
-                    // print('LLEGARON DATOS');
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        var piloto = snapshot.data[index];
-                        return PilotoTile(
-                          nombre: piloto['nombre'],
-                          numero: piloto['numero'],
-                          puntos: piloto['puntos'],
-                          pais: piloto['pais'],
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-            //FIN LISTA PILOTOS
-          ],
-        ),
-      ),
+      body: paginas[indicePagina],
       //BOTTOM NAVBAR
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color(0xFFE10600),
+        currentIndex: indicePagina,
+        onTap: (index) {
+          setState(() {
+            indicePagina = index;
+          });
+        },
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
@@ -101,6 +45,21 @@ class _PilotosPageState extends State<PilotosPage> {
         ],
       ),
       //FIN BOTTOM NAVBAR
+
+      //BOTON AGREGAR
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          MdiIcons.accountPlus,
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: Color(kPrimaryColor),
+        onPressed: () {
+          MaterialPageRoute ruta = MaterialPageRoute(builder: (context) => PilotosAgregarPage());
+          Navigator.push(context, ruta);
+        },
+      ),
+      //FIN BOTON AGREGAR
     );
   }
 }

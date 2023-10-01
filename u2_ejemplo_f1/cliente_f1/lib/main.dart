@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:u2_clase2/constants.dart';
 import 'package:u2_clase2/pages/home_page.dart';
 
 void main() {
@@ -30,7 +31,12 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          backgroundColor: Color(kPrimaryColor),
+          centerTitle: true,
+        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(kPrimaryColor)),
         useMaterial3: true,
       ),
       home: HomePage(),
