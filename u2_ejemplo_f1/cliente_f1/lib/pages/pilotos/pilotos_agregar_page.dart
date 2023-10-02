@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:u2_clase2/constants.dart';
+import 'package:u2_clase2/services/http_service.dart';
+import 'package:u2_clase2/widgets/campo_form.dart';
 import 'package:u2_clase2/widgets/logo_f1.dart';
+import 'package:u2_clase2/widgets/titulo_seccion.dart';
 
 class PilotosAgregarPage extends StatefulWidget {
   const PilotosAgregarPage({super.key});
@@ -31,35 +33,44 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
           child: Column(
             children: [
               //TITULO SECCION
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(30, 10, 0, 5),
-                decoration: BoxDecoration(
-                  color: Color(kSecondaryColor),
-                  border: Border(bottom: BorderSide(color: Color(kPrimaryColor), width: 7)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Agregar',
-                      style: GoogleFonts.oxanium(textStyle: TextStyle(fontStyle: FontStyle.italic, color: Colors.white)),
-                    ),
-                    Text(
-                      'PILOTOS',
-                      style: GoogleFonts.oxanium(
-                        textStyle: TextStyle(height: 0.8, color: Colors.white, fontSize: 22, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              TituloSeccion(titulo: 'PILOTOS', subtitulo: 'Agregar'),
               //FIN TITULO SECCION
 
               //FORMULARIO
               Expanded(
                 child: ListView(
-                  children: [],
+                  children: [
+                    //nombre
+                    CampoForm(
+                      controller: nombreCtrl,
+                      titulo: 'Nombre',
+                      tipoTeclado: TextInputType.text,
+                    ),
+                    //numero
+                    CampoForm(
+                      controller: numeroCtrl,
+                      titulo: 'Número',
+                      tipoTeclado: TextInputType.number,
+                    ),
+                    //puntos
+                    CampoForm(
+                      controller: puntosCtrl,
+                      titulo: 'Puntos',
+                      tipoTeclado: TextInputType.number,
+                    ),
+                    //fecha de nacimiento
+                    CampoForm(
+                      controller: fechaNacimientoCtrl,
+                      titulo: 'Fecha de Nacimiento',
+                      tipoTeclado: TextInputType.datetime,
+                    ),
+                    //pais
+                    CampoForm(
+                      controller: paisCtrl,
+                      titulo: 'País',
+                      tipoTeclado: TextInputType.text,
+                    ),
+                  ],
                 ),
               ),
               //FORMULARIO
@@ -72,7 +83,20 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                   ),
                   child: Text('AGREGAR'),
-                  onPressed: () {},
+                  onPressed: () {
+                    int numero = int.tryParse(numeroCtrl.text) ?? 0;
+                    int puntos = int.tryParse(puntosCtrl.text) ?? 0;
+
+                    HttpService().pilotosAgregar(
+                      nombreCtrl.text,
+                      numero,
+                      puntos,
+                      fechaNacimientoCtrl.text,
+                      paisCtrl.text,
+                    );
+
+                    Navigator.pop(context);
+                  },
                 ),
               ),
               //FIN BOTON ACEPTAR

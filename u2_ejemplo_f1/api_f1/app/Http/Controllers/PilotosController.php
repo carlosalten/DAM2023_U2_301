@@ -12,7 +12,7 @@ class PilotosController extends Controller
      */
     public function index()
     {
-        sleep(3);
+        //sleep(3);
         return Piloto::all();
     }
 
