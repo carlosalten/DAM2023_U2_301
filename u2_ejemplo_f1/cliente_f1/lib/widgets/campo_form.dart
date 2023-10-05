@@ -5,12 +5,14 @@ class CampoForm extends StatelessWidget {
     super.key,
     required this.controller,
     required this.titulo,
-    required this.tipoTeclado,
+    this.tipoTeclado = TextInputType.text,
+    this.textoError = '',
   });
 
   final TextEditingController controller;
   final String titulo;
   final TextInputType tipoTeclado;
+  final String textoError;
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +23,18 @@ class CampoForm extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(labelText: this.titulo),
-        keyboardType: tipoTeclado,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: controller,
+            decoration: InputDecoration(labelText: this.titulo),
+            keyboardType: tipoTeclado,
+          ),
+          Text(
+            this.textoError,
+            style: TextStyle(color: Colors.red),
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -14,9 +15,9 @@ class HttpService {
     return [];
   }
 
-  void pilotosAgregar(String nombre, int numero, int puntos, String fechaNacimiento, String pais) async {
+  Future<LinkedHashMap<String, dynamic>> pilotosAgregar(String nombre, int numero, int puntos, String fechaNacimiento, String pais) async {
     var url = Uri.parse('$apiUrl/pilotos');
-    await http.post(
+    var respuesta = await http.post(
       url,
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json'},
       body: json.encode(<String, dynamic>{
@@ -27,5 +28,6 @@ class HttpService {
         'pais': pais,
       }),
     );
+    return json.decode(respuesta.body);
   }
 }

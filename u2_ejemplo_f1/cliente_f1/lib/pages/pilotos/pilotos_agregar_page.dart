@@ -19,6 +19,8 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
   TextEditingController fechaNacimientoCtrl = TextEditingController();
   TextEditingController paisCtrl = TextEditingController();
 
+  String errNombre = '', errNumero = '', errPuntos = '', errFechaNacimiento = '', errPais = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,31 +46,34 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
                     CampoForm(
                       controller: nombreCtrl,
                       titulo: 'Nombre',
-                      tipoTeclado: TextInputType.text,
+                      textoError: errNombre,
                     ),
                     //numero
                     CampoForm(
                       controller: numeroCtrl,
                       titulo: 'Número',
                       tipoTeclado: TextInputType.number,
+                      textoError: errNumero,
                     ),
                     //puntos
                     CampoForm(
                       controller: puntosCtrl,
                       titulo: 'Puntos',
                       tipoTeclado: TextInputType.number,
+                      textoError: errPuntos,
                     ),
                     //fecha de nacimiento
                     CampoForm(
                       controller: fechaNacimientoCtrl,
                       titulo: 'Fecha de Nacimiento',
                       tipoTeclado: TextInputType.datetime,
+                      textoError: errFechaNacimiento,
                     ),
                     //pais
                     CampoForm(
                       controller: paisCtrl,
                       titulo: 'País',
-                      tipoTeclado: TextInputType.text,
+                      textoError: errPais,
                     ),
                   ],
                 ),
@@ -83,11 +88,11 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                   ),
                   child: Text('AGREGAR'),
-                  onPressed: () {
-                    int numero = int.tryParse(numeroCtrl.text) ?? 0;
-                    int puntos = int.tryParse(puntosCtrl.text) ?? 0;
+                  onPressed: () async {
+                    int numero = int.tryParse(numeroCtrl.text) ?? -1;
+                    int puntos = int.tryParse(puntosCtrl.text) ?? -1;
 
-                    HttpService().pilotosAgregar(
+                    var respuesta = await HttpService().pilotosAgregar(
                       nombreCtrl.text,
                       numero,
                       puntos,
@@ -95,7 +100,23 @@ class _PilotosAgregarPageState extends State<PilotosAgregarPage> {
                       paisCtrl.text,
                     );
 
-                    Navigator.pop(context);
+                    if (respuesta['message'] != null) {
+                      //quedarme en la página para mostrar errores
+                      setState(() {
+                        var errores = respuesta['errors'];
+                        // if (errores['nombre'] != null) {
+                        //   errNombre = errores['nombre'][0];
+                        // }
+                        errNombre = errores['nombre'] != null ? errores['nombre'][0] : '';
+                        errNumero = errores['numero'] != null ? errores['numero'][0] : '';
+                        errPuntos = errores['puntos'] != null ? errores['puntos'][0] : '';
+                        errFechaNacimiento = errores['fecha_nacimiento'] != null ? errores['fecha_nacimiento'][0] : '';
+                        errPais = errores['pais'] != null ? errores['pais'][0] : '';
+                      });
+                    } else {
+                      //inserción ok
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               ),
