@@ -30,4 +30,14 @@ class HttpService {
     );
     return json.decode(respuesta.body);
   }
+
+  Future<bool> mascotasBorrar(int id) async {
+    var respuesta = await http.delete(Uri.parse('$apiUrl/mascotas/$id'));
+    return respuesta.statusCode == 200;
+    // if (respuesta.statusCode == 200) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+  }
 }
