@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mascotas_cliente/models/mascota.dart';
 import 'package:mascotas_cliente/services/http_service.dart';
+import 'package:mascotas_cliente/utils/util_mensaje.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class TabPacientes extends StatefulWidget {
-  const TabPacientes({super.key});
+class TabPacientes1 extends StatefulWidget {
+  const TabPacientes1({super.key});
 
   @override
-  State<TabPacientes> createState() => _TabPacientesState();
+  State<TabPacientes1> createState() => _TabPacientes1State();
 }
 
-class _TabPacientesState extends State<TabPacientes> {
+class _TabPacientes1State extends State<TabPacientes1> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -64,12 +65,7 @@ class _TabPacientesState extends State<TabPacientes> {
                                     HttpService().mascotasBorrar(mascota.id).then((borradoOk) {
                                       if (borradoOk) {
                                         //pudo borrar :)
-                                        ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
-                                          SnackBar(
-                                            content: Text('${mascota.nombre} borrado :)'),
-                                            duration: Duration(seconds: 2),
-                                          ),
-                                        );
+                                        UtilMensaje.mostrarSnackbar(scaffoldKey.currentContext!, MdiIcons.alertCircle, 'Se borró a ${mascota.nombre}');
                                       } else {
                                         //no pudo borrar :(
                                       }

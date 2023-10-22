@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mascotas_cliente/pages/tabs/tab_equipo.dart';
-import 'package:mascotas_cliente/pages/tabs/tab_pacientes.dart';
+import 'package:mascotas_cliente/pages/tabs/tab_pacientes1.dart';
+import 'package:mascotas_cliente/pages/tabs/tab_pacientes2.dart';
+import 'package:mascotas_cliente/pages/tabs/tab_pacientes3.dart';
 import 'package:mascotas_cliente/pages/tabs/tab_urgencias.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,7 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         //APPBAR
@@ -44,13 +45,15 @@ class HomePage extends StatelessWidget {
                   children: [
                     //TABS
                     TabBar(
+                      isScrollable: true,
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.white,
                       indicatorColor: Colors.white,
                       labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       tabs: [
-                        Tab(text: 'Pacientes'),
-                        Tab(text: 'Equipo'),
+                        Tab(text: 'Pacientes1'),
+                        Tab(text: 'Pacientes2'),
+                        Tab(text: 'Pacientes3'),
                         Tab(text: 'Urgencias'),
                       ],
                     ),
@@ -82,7 +85,7 @@ class HomePage extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
                   child: TabBarView(
-                    children: [TabPacientes(), TabEquipo(), TabUrgencias()],
+                    children: [TabPacientes1(), TabPacientes2(), TabPacientes3(), TabUrgencias()],
                   ),
                 ),
               ),
