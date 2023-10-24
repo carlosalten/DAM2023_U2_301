@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mascotas_cliente/models/mascota.dart';
 import 'package:mascotas_cliente/services/http_service.dart';
+import 'package:mascotas_cliente/utils/util_mensaje.dart';
 import 'package:mascotas_cliente/widgets/mascota_tile.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -38,7 +39,48 @@ class _TabPacientes2State extends State<TabPacientes2> {
                       itemBuilder: (context, index) {
                         //Mascota Tile
                         Mascota mascota = Mascota(snapshot.data[index]);
-                        return MascotaTile(mascota: mascota);
+                        return Dismissible(
+                          key: ObjectKey(mascota.id),
+                          // direction: DismissDirection.endToStart,
+                          secondaryBackground: Container(
+                            padding: EdgeInsets.only(right: 5),
+                            alignment: Alignment.centerRight,
+                            color: Colors.red,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text('Borrar', style: TextStyle(color: Colors.white)),
+                                Icon(MdiIcons.trashCan, color: Colors.white),
+                              ],
+                            ),
+                          ),
+                          background: Container(
+                            color: Colors.purple,
+                          ),
+                          child: MascotaTile(mascota: mascota),
+                          onDismissed: (direction) {
+                            setState(() {
+                              HttpService().mascotasBorrar(mascota.id).then((borradoOk) {
+                                if (borradoOk) {
+                                  //mostrar mensaje
+                                  UtilMensaje.mostrarSnackbar(
+                                    scaffoldKey.currentContext!,
+                                    MdiIcons.alert,
+                                    'Se borró a ${mascota.nombre}',
+                                  );
+                                }
+                              });
+                            });
+
+                            // if (direction == DismissDirection.startToEnd) {
+                            //   //desplazó hacia la derecha
+                            // } else if (direction == DismissDirection.endToStart) {
+                            //   //desplazó a la izquierda
+                            // } else {
+                            //   //otro
+                            // }
+                          },
+                        );
                         //Fin Mascota Tile
                       },
                     );

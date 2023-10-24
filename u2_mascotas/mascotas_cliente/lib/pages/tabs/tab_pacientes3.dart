@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mascotas_cliente/models/mascota.dart';
 import 'package:mascotas_cliente/services/http_service.dart';
+import 'package:mascotas_cliente/utils/util_mensaje.dart';
 import 'package:mascotas_cliente/widgets/mascota_tile.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TabPacientes3 extends StatefulWidget {
   const TabPacientes3({super.key});
@@ -38,7 +40,53 @@ class _TabPacientes3State extends State<TabPacientes3> {
                       itemBuilder: (context, index) {
                         //Mascota Tile
                         Mascota mascota = Mascota(snapshot.data[index]);
-                        return MascotaTile(mascota: mascota);
+                        return Slidable(
+                          startActionPane: ActionPane(
+                            motion: ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                icon: MdiIcons.dog,
+                                label: 'Ver Info',
+                                onPressed: (context) {},
+                              ),
+                            ],
+                          ),
+                          endActionPane: ActionPane(
+                            motion: ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                                label: 'Editar',
+                                onPressed: (context) {},
+                              ),
+                              SlidableAction(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                icon: MdiIcons.trashCan,
+                                label: 'Borrar',
+                                onPressed: (context) {
+                                  setState(() {
+                                    HttpService().mascotasBorrar(mascota.id).then((borradoOk) {
+                                      if (borradoOk) {
+                                        //mostrar mensaje
+                                        UtilMensaje.mostrarSnackbar(
+                                          scaffoldKey.currentContext!,
+                                          MdiIcons.alert,
+                                          'Se borró a ${mascota.nombre}',
+                                        );
+                                      }
+                                    });
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          child: MascotaTile(mascota: mascota),
+                        );
                         //Fin Mascota Tile
                       },
                     );
