@@ -5,18 +5,19 @@ class Mascota {
   String _raza;
   String _sexo;
 
-  Mascota(dynamic data)
-      : _id = int.parse(data['id'].toString()),
-        _nombre = data['nombre'],
-        _especie = data['especie'],
-        _raza = data['raza'],
-        _sexo = data['sexo'];
+  Mascota({id = 0, nombre = '', especie = '', raza = '', sexo = ''})
+      : _id = id,
+        _nombre = nombre,
+        _especie = especie,
+        _raza = raza,
+        _sexo = sexo;
 
-  //get
-  //tipo_dat get nombre => atributo_que_retorna
-
-  //set
-  //set nombre(tipo valor) => atributo = valor
+  Mascota.fromSnapshot(dynamic snapshot)
+      : _id = int.parse(snapshot['id'].toString()),
+        _nombre = snapshot['nombre'],
+        _especie = snapshot['especie'],
+        _raza = snapshot['raza'],
+        _sexo = snapshot['sexo'];
 
   int get id => this._id;
   set id(int id) => this._id = id;

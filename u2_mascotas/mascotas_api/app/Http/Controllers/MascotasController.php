@@ -24,7 +24,6 @@ class MascotasController extends Controller
         $mascota->especie = $request->especie;
         $mascota->raza = $request->raza;
         $mascota->nombre = $request->nombre;
-        $mascota->fecha_nacimiento = $request->fecha_nacimiento;
         $mascota->sexo = $request->sexo;
         $mascota->save();
         return $mascota;
@@ -46,7 +45,6 @@ class MascotasController extends Controller
         $mascota->especie = $request->especie;
         $mascota->raza = $request->raza;
         $mascota->nombre = $request->nombre;
-        $mascota->fecha_nacimiento = $request->fecha_nacimiento;
         $mascota->sexo = $request->sexo;
         $mascota->save();
         return $mascota;

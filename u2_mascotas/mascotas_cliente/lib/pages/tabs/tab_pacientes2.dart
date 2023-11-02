@@ -13,8 +13,7 @@ class TabPacientes2 extends StatefulWidget {
 }
 
 class _TabPacientes2State extends State<TabPacientes2> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,69 +22,72 @@ class _TabPacientes2State extends State<TabPacientes2> {
         children: [
           Expanded(
             child: FutureBuilder(
-                future: HttpService().mascotas(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.data.length == 0) {
-                    return Center(child: Text('No hay mascotas :('));
-                  } else {
-                    return ListView.separated(
-                      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      separatorBuilder: (_, __) => Divider(),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        //Mascota Tile
-                        Mascota mascota = Mascota(snapshot.data[index]);
-                        return Dismissible(
-                          key: ObjectKey(mascota.id),
-                          // direction: DismissDirection.endToStart,
-                          secondaryBackground: Container(
-                            padding: EdgeInsets.only(right: 5),
-                            alignment: Alignment.centerRight,
-                            color: Colors.red,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text('Borrar', style: TextStyle(color: Colors.white)),
-                                Icon(MdiIcons.trashCan, color: Colors.white),
-                              ],
-                            ),
+              future: HttpService().mascotas(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.data.length == 0) {
+                  return Center(child: Text('No hay mascotas :('));
+                } else {
+                  return ListView.separated(
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    separatorBuilder: (_, __) => Divider(),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      //Tile Mascota
+                      Mascota mascota = Mascota.fromSnapshot(snapshot.data[index]);
+                      return Dismissible(
+                        key: ObjectKey(mascota.id),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          color: Colors.red,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Borrar',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Icon(
+                                MdiIcons.trashCan,
+                                color: Colors.white,
+                              )
+                            ],
                           ),
-                          background: Container(
-                            color: Colors.purple,
-                          ),
-                          child: MascotaTile(mascota: mascota),
-                          onDismissed: (direction) {
-                            setState(() {
-                              HttpService().mascotasBorrar(mascota.id).then((borradoOk) {
-                                if (borradoOk) {
-                                  //mostrar mensaje
-                                  UtilMensaje.mostrarSnackbar(
-                                    scaffoldKey.currentContext!,
-                                    MdiIcons.alert,
-                                    'Se borró a ${mascota.nombre}',
-                                  );
-                                }
-                              });
+                        ),
+                        onDismissed: (direction) {
+                          //borrar
+                          setState(() {
+                            HttpService().mascotaBorrar(mascota.id).then((borradoOk) {
+                              if (borradoOk) {
+                                UtilMensaje.mostrarSnackbar(
+                                  scaffoldKey.currentContext!,
+                                  MdiIcons.alert,
+                                  'Se ha borrado a ${mascota.nombre}',
+                                );
+                              }
                             });
+                          });
 
-                            // if (direction == DismissDirection.startToEnd) {
-                            //   //desplazó hacia la derecha
-                            // } else if (direction == DismissDirection.endToStart) {
-                            //   //desplazó a la izquierda
-                            // } else {
-                            //   //otro
-                            // }
-                          },
-                        );
-                        //Fin Mascota Tile
-                      },
-                    );
-                  }
-                }),
+                          // if(direction==DismissDirection.startToEnd){
+                          //   //hacia la derecha
+                          // }else if(direction==DismissDirection.endToStart){
+                          //   //hacia la izquierda
+                          // }else{
+                          //   //otra
+                          // }
+                        },
+                        child: MascotaTile(mascota: mascota),
+                      );
+                      //Fin Tile Mascota
+                    },
+                  );
+                }
+              },
+            ),
           ),
           Container(
             width: double.infinity,

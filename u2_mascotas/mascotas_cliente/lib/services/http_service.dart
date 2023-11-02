@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mascotas_cliente/models/mascota.dart';
 
 class HttpService {
   final String apiUrl = 'http://10.0.2.2:8000/api';
@@ -24,14 +25,13 @@ class HttpService {
         'especie': especie,
         'raza': raza,
         'nombre': nombre,
-        'fecha_nacimiento': fechaNacimiento,
         'sexo': sexo,
       }),
     );
     return json.decode(respuesta.body);
   }
 
-  Future<bool> mascotasBorrar(int id) async {
+  Future<bool> mascotaBorrar(int id) async {
     var respuesta = await http.delete(Uri.parse('$apiUrl/mascotas/$id'));
     return respuesta.statusCode == 200;
     // if (respuesta.statusCode == 200) {
@@ -39,5 +39,29 @@ class HttpService {
     // } else {
     //   return false;
     // }
+  }
+
+  Future<LinkedHashMap<String, dynamic>> mascota(int id) async {
+    var respuesta = await http.get(Uri.parse('$apiUrl/mascotas/$id'));
+
+    if (respuesta.statusCode == 200) {
+      return json.decode(respuesta.body);
+    }
+    return LinkedHashMap<String, dynamic>();
+  }
+
+  Future<LinkedHashMap<String, dynamic>> mascotaEditar(Mascota mascota) async {
+    var url = Uri.parse('$apiUrl/mascotas/${mascota.id}');
+    var respuesta = await http.put(
+      url,
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json'},
+      body: json.encode(<String, dynamic>{
+        'especie': mascota.especie,
+        'raza': mascota.raza,
+        'nombre': mascota.nombre,
+        'sexo': mascota.sexo,
+      }),
+    );
+    return json.decode(respuesta.body);
   }
 }

@@ -12,8 +12,7 @@ class TabPacientes1 extends StatefulWidget {
 }
 
 class _TabPacientes1State extends State<TabPacientes1> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +35,13 @@ class _TabPacientes1State extends State<TabPacientes1> {
                       separatorBuilder: (_, __) => Divider(),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        Mascota mascota = Mascota(snapshot.data[index]);
+                        // var mascota = snapshot.data[index];
+                        Mascota mascota = Mascota.fromSnapshot(snapshot.data[index]);
                         return ListTile(
                           leading: Icon(
                             mascota.especie == 'Perro' ? MdiIcons.dog : MdiIcons.cat,
                             size: 30,
-                            color: mascota.especie == 'Perro' ? Colors.deepPurple : Colors.deepOrange,
+                            color: mascota.especie == 'Perro' ? Colors.deepPurple : Colors.orange,
                           ),
                           title: Row(
                             children: [
@@ -61,9 +61,10 @@ class _TabPacientes1State extends State<TabPacientes1> {
                             onTap: () {
                               confirmDialog(mascota).then((confirmaBorrado) {
                                 if (confirmaBorrado) {
+                                  //borrar
                                   setState(() {
-                                    HttpService().mascotasBorrar(mascota.id).then((borradoOk) {
-                                      if (borradoOk) {
+                                    HttpService().mascotaBorrar(mascota.id).then((borradoExito) {
+                                      if (borradoExito) {
                                         //pudo borrar :)
                                         UtilMensaje.mostrarSnackbar(scaffoldKey.currentContext!, MdiIcons.alertCircle, 'Se borró a ${mascota.nombre}');
                                       } else {
@@ -105,23 +106,24 @@ class _TabPacientes1State extends State<TabPacientes1> {
 
   Future<dynamic> confirmDialog(Mascota mascota) {
     return showDialog(
-        barrierDismissible: false,
-        context: scaffoldKey.currentContext!,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Confirmar borrado'),
-            content: Text('¿Borrar a ${mascota.nombre}?'),
-            actions: [
-              TextButton(
-                child: Text('CANCELAR'),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              ElevatedButton(
-                child: Text('ACEPTAR'),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ],
-          );
-        });
+      barrierDismissible: false,
+      context: scaffoldKey.currentContext!,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Confirmar Borrado'),
+          content: Text('¿Borrar a ${mascota.nombre}?'),
+          actions: [
+            TextButton(
+              child: Text('CANCELAR'),
+              onPressed: () => Navigator.pop(context, false),
+            ),
+            ElevatedButton(
+              child: Text('ACEPTAR'),
+              onPressed: () => Navigator.pop(context, true),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

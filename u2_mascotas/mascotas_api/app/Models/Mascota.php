@@ -10,4 +10,5 @@ class Mascota extends Model
     use HasFactory;
 
     protected $table='mascotas';
+    public $timestamps = false;
 }
