@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "12954635973",
-    "project_id": "usm-dam-302",
-    "storage_bucket": "usm-dam-302.appspot.com"
+    "project_number": "549299790233",
+    "project_id": "dam301ejemploestudiantes",
+    "storage_bucket": "dam301ejemploestudiantes.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:12954635973:android:58dfed6413e819db4b6aac",
+        "mobilesdk_app_id": "1:549299790233:android:ee4255eb1fbef631a63308",
         "android_client_info": {
-          "package_name": "com.dam302.ejemploestudiantes"
+          "package_name": "cl.dam301.ejemplofirebase"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCfjrELUyVFHA06cZj-E2GwRFJGfSuT1dM"
+          "current_key": "AIzaSyBHQ5fMqioh9tZhVOWgeFsi4y7PwV4nw2Q"
         }
       ],
       "services": {
