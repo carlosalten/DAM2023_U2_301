@@ -1,4 +1,7 @@
+import 'package:ejemplo_validar_form/services/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EstudianteAgregarPage extends StatefulWidget {
   EstudianteAgregarPage({Key? key}) : super(key: key);
@@ -13,12 +16,13 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
   TextEditingController edadCtrl = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  DateTime fecha_matricula = DateTime.now();
+  final formatoFecha = DateFormat('dd-MM-yyyy');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red.shade600,
         title: Text('Ejemplo Validar Form', style: TextStyle(color: Colors.white)),
       ),
       body: Form(
@@ -88,6 +92,33 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
                   return null;
                 },
               ),
+              //FECHA MATRICULA
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                child: Row(
+                  children: [
+                    Text('Fecha de Matrícula: '),
+                    Text(formatoFecha.format(fecha_matricula), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(MdiIcons.calendar),
+                      onPressed: () {
+                        showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime.now(),
+                          locale: Locale('es', 'ES'),
+                        ).then((fecha) {
+                          setState(() {
+                            fecha_matricula = fecha ?? fecha_matricula;
+                          });
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
               //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
@@ -99,6 +130,13 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
                     if (formKey.currentState!.validate()) {
                       //formulario está ok
                       //proceder con agregar estudiante a bd
+                      FirestoreService().estudianteAgregar(
+                        nombreCtrl.text.trim(),
+                        apellidoCtrl.text.trim(),
+                        int.tryParse(edadCtrl.text.trim()) ?? 0,
+                        fecha_matricula,
+                      );
+                      Navigator.pop(context);
                     }
                   },
                 ),
