@@ -51,7 +51,11 @@ class EstudiantesPage extends StatelessWidget {
                     child: ListTile(
                       leading: Icon(MdiIcons.account),
                       title: Text('${estudiante['nombre']} ${estudiante['apellido']}'),
-                      subtitle: Text('Fecha de Matrícula: ' + formatoFecha.format(estudiante['fecha_matricula'].toDate())),
+                      subtitle: Text(estudiante['carrera']),
+                      // subtitle: Text('Fecha de Matrícula: ' + formatoFecha.format(estudiante['fecha_matricula'].toDate())),
+                      onLongPress: () {
+                        mostrarInfoEstudiante(context, estudiante);
+                      },
                     ),
                   );
                 },
@@ -67,6 +71,38 @@ class EstudiantesPage extends StatelessWidget {
           Navigator.push(context, route);
         },
       ),
+    );
+  }
+
+  void mostrarInfoEstudiante(BuildContext context, estudiante) {
+    // print(estudiante['nombre']);
+    showBottomSheet(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: 350,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Nombre: ${estudiante['nombre']} ${estudiante['apellido']}'),
+                Text('Carrera: ${estudiante['carrera']}'),
+                Text('Edad:${estudiante['edad']}'),
+                Spacer(),
+                Container(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    child: Text('Cerrar'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

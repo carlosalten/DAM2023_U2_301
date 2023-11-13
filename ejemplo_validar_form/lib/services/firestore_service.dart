@@ -9,17 +9,24 @@ class FirestoreService {
   }
 
   //insertar nuevo estudiante
-  Future<void> estudianteAgregar(String nombre, String apellido, int edad, DateTime fecha_matricula) async {
+  Future<void> estudianteAgregar(String nombre, String apellido, int edad, DateTime fecha_matricula, String jornada, String carrera) async {
     return FirebaseFirestore.instance.collection('estudiantes').doc().set({
       'nombre': nombre,
       'apellido': apellido,
       'edad': edad,
       'fecha_matricula': fecha_matricula,
+      'jornada': jornada,
+      'carrera': carrera,
     });
   }
 
   //borrar estudiante
   Future<void> estudianteBorrar(String docId) async {
     return FirebaseFirestore.instance.collection('estudiantes').doc(docId).delete();
+  }
+
+  //obtener la lista de carreras
+  Future<QuerySnapshot> carreras() async {
+    return FirebaseFirestore.instance.collection('carreras').orderBy('nombre').get();
   }
 }

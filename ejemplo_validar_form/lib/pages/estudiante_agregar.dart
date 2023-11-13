@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ejemplo_validar_form/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +19,8 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
   final formKey = GlobalKey<FormState>();
   DateTime fecha_matricula = DateTime.now();
   final formatoFecha = DateFormat('dd-MM-yyyy');
+  String jornada = 'd';
+  String carrera = '';
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +122,66 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
                   ],
                 ),
               ),
+              //JORNADA
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Jornada'),
+                    RadioListTile(
+                      title: Text('Diurna'),
+                      value: 'd',
+                      groupValue: jornada,
+                      onChanged: (jornadaSeleccionada) {
+                        setState(() {
+                          jornada = jornadaSeleccionada!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      title: Text('Vespertina'),
+                      value: 'v',
+                      groupValue: jornada,
+                      onChanged: (jornadaSeleccionada) {
+                        setState(() {
+                          jornada = jornadaSeleccionada!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              //CARRERA
+              FutureBuilder(
+                  future: FirestoreService().carreras(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+                      //esperando
+                      return Text('Cargando Carreras...');
+                    } else {
+                      var carreras = snapshot.data!.docs;
+                      return DropdownButtonFormField<String>(
+                        value: carrera == '' ? carreras[0]['nombre'] : carrera,
+                        decoration: InputDecoration(labelText: 'Carrera'),
+                        // items: [
+                        //   DropdownMenuItem(child: Text('T.U. en Informática'), value: 'T.U. en Informática'),
+                        //   DropdownMenuItem(child: Text('Ing. en Informática'), value: 'Ing. en Informática'),
+                        // ],
+                        items: carreras.map<DropdownMenuItem<String>>((carr) {
+                          return DropdownMenuItem<String>(
+                            child: Text(carr['nombre']),
+                            value: carr['nombre'],
+                          );
+                        }).toList(),
+                        onChanged: (carreraSeleccionada) {
+                          setState(() {
+                            carrera = carreraSeleccionada!;
+                          });
+                        },
+                      );
+                    }
+                  }),
               //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
@@ -135,6 +198,8 @@ class _EstudianteAgregarPageState extends State<EstudianteAgregarPage> {
                         apellidoCtrl.text.trim(),
                         int.tryParse(edadCtrl.text.trim()) ?? 0,
                         fecha_matricula,
+                        jornada,
+                        carrera,
                       );
                       Navigator.pop(context);
                     }
