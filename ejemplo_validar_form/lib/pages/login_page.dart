@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -63,7 +65,33 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     child: FilledButton(
                       child: Text('Iniciar Sesión'),
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: emailCtrl.text.trim(),
+                            password: passwordCtrl.text.trim(),
+                          );
+                        } on FirebaseAuthException catch (ex) {
+                          setState(() {
+                            switch (ex.code) {
+                              case 'channel-error':
+                                msgError = 'Complete el formulario';
+                                break;
+                              case 'invalid-email':
+                                msgError = 'Email no válido';
+                                break;
+                              case 'INVALID_LOGIN_CREDENTIALS':
+                                msgError = 'Credenciales incorrectas';
+                                break;
+                              case 'user-disabled':
+                                msgError = 'Cuenta desactivada';
+                                break;
+                              default:
+                                msgError = 'Error en el sistema';
+                            }
+                          });
+                        }
+                      },
                     ),
                   ),
                   //errores

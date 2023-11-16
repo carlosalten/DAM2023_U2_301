@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ejemplo_validar_form/pages/estudiante_agregar.dart';
 import 'package:ejemplo_validar_form/services/firestore_service.dart';
 import 'package:ejemplo_validar_form/widgets/campo_estudiante.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class EstudiantesPage extends StatelessWidget {
   final formatoFecha = DateFormat('dd-MM-yyyy');
@@ -19,7 +21,9 @@ class EstudiantesPage extends StatelessWidget {
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [PopupMenuItem(child: Text('Cerrar Sesión'), value: 'logout')],
-            onSelected: (opcion) {},
+            onSelected: (opcion) {
+              FirebaseAuth.instance.signOut();
+            },
           ),
         ],
       ),
@@ -30,7 +34,7 @@ class EstudiantesPage extends StatelessWidget {
             padding: EdgeInsets.all(10),
             color: Color(0xFF051E34),
             width: double.infinity,
-            child: Text('holamundo@usm.cl', style: TextStyle(color: Colors.white)),
+            child: Text(this.emailUsuario(context), style: TextStyle(color: Colors.white)),
           ),
           //LISTA DE ESTUDIANTES
           Expanded(
@@ -134,5 +138,10 @@ class EstudiantesPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  String emailUsuario(BuildContext context) {
+    final usuario = Provider.of<User?>(context);
+    return usuario!.email.toString();
   }
 }
