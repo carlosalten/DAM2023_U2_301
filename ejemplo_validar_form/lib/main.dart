@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [Locale('es')],
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF272F3C),
+          backgroundColor: Color(0xFF051E34),
           foregroundColor: Colors.white,
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
